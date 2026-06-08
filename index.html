@@ -1,0 +1,1800 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Urban Hunter - București Treasure Hunt</title>
+  
+  <!-- Gorgeous 2026 Future Dusk Typography - Plus Jakarta Sans & Syne -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Icons via Lucide Content Delivery Network -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            autumn: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              200: '#99f6e4',
+              300: '#5eead4',
+              400: '#2dd4bf',
+              500: '#14b8a6', // bright cyber teal
+              600: '#0d9488',
+              700: '#0f766e',
+              800: '#115e59',
+              900: '#134e4a',
+              950: '#042f2e',
+            },
+            amber: {
+              50: '#faf5ff',
+              100: '#f3e8ff',
+              200: '#e9d5ff',
+              300: '#d8b4fe',
+              400: '#c084fc',
+              500: '#a855f7', // electric violet / lavender
+              600: '#9333ea',
+              700: '#7e22ce',
+              800: '#6b21a8',
+              900: '#581c87',
+              950: '#3b0764',
+            },
+            cozy: {
+              dark: '#080410',     // 2026 Midnight Future Dusk base
+              card: '#110925',     // deep neon twilight indigo cards
+              border: '#251545',   // techno border violet
+              input: '#170d32'     // inputs
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['Syne', 'sans-serif'],
+            serif: ['"Plus Jakarta Sans"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom CSS animations and transitions */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes pulseSoft {
+      0%, 100% {
+        opacity: 0.15;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.25;
+        transform: scale(1.05);
+      }
+    }
+
+    @keyframes leafFall {
+      0% {
+        transform: translateY(-10vh) translateX(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.7;
+      }
+      90% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(110vh) translateX(100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .animate-fade-in-up {
+      animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .pulse-glow {
+      animation: pulseSoft 6s ease-in-out infinite;
+    }
+
+    /* Falling leaves container styled smoothly */
+    .leaf-particle {
+      position: absolute;
+      top: -50px;
+      pointer-events: none;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body class="bg-cozy-dark text-amber-50 min-h-screen font-sans flex flex-col justify-between overflow-x-hidden relative selection:bg-autumn-700 selection:text-white">
+
+  <!-- Aesthetic atmospheric overlay -->
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-autumn-900/30 via-cozy-dark to-cozy-dark pointer-events-none z-0"></div>
+  <div class="absolute inset-0 pulse-glow bg-radial bg-autumn-600/5 mix-blend-color-dodge pointer-events-none z-0"></div>
+  
+  <!-- Falling Leaves Particle Layer -->
+  <div id="leaves-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
+
+  <!-- Header Branding Spacer -->
+  <header class="w-full max-w-md mx-auto pt-8 px-6 flex justify-between items-center z-10 relative">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-autumn-500 to-amber-600 flex items-center justify-center shadow-lg shadow-autumn-900/50">
+        <i data-lucide="compass" class="w-5 h-5 text-amber-50 animate-pulse"></i>
+      </div>
+      <span class="font-display font-medium text-sm tracking-wider text-amber-400 uppercase">Urban Hunter</span>
+    </div>
+    <div class="text-xs font-mono text-autumn-400/80 bg-cozy-card/40 py-1 px-2.5 rounded-full border border-cozy-border/30 backdrop-blur-sm" id="mission-badge">
+      Bucharest • Misiunea 1
+    </div>
+  </header>
+
+  <!-- Main Container: phone-optimized layout -->
+  <main class="w-full max-w-sm mx-auto px-6 py-6 flex-grow flex flex-col justify-center z-10 relative">
+    
+    <!-- ================= ECRANUL 1: Start Screen ================= -->
+    <div id="setup-screen" class="space-y-6 transition-all duration-500 transform scale-100 opacity-100">
+      
+      <!-- Visual Banner Card -->
+      <div class="text-center space-y-4">
+        <div class="relative inline-block mx-auto mb-2">
+          <div class="absolute inset-0 rounded-full bg-autumn-500/15 blur-xl animate-pulse"></div>
+          <div class="w-22 h-22 rounded-full border border-autumn-500/20 bg-cozy-card flex items-center justify-center relative shadow-inner">
+            <i data-lucide="map-pin" class="w-11 h-11 text-autumn-500"></i>
+          </div>
+        </div>
+        
+        <h1 class="text-4xl font-display font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-autumn-400 to-amber-300">
+          Urban Hunter
+        </h1>
+        
+        <p class="font-display text-xl sm:text-2xl font-bold text-amber-300 tracking-wide max-w-xs mx-auto leading-snug">
+          Esti din sectorul 3? De pula sa ma iei
+        </p>
+      </div>
+
+      <!-- Action Form Card -->
+      <div class="bg-gradient-to-b from-cozy-card to-cozy-card/90 border border-cozy-border rounded-2xl p-6 shadow-xl shadow-black/40 space-y-5 backdrop-blur-md relative overflow-hidden">
+        <div class="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-autumn-500/50 to-transparent"></div>
+        
+        <div>
+          <label for="username" class="block text-xs font-medium uppercase tracking-widest text-autumn-300 mb-2">
+            Numele tău de explorator
+          </label>
+          
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-autumn-400/60">
+              <i data-lucide="user" class="w-4 h-4"></i>
+            </span>
+            <input 
+              type="text" 
+              id="username" 
+              placeholder="Ex. Andrei sau Eugen sau Vic" 
+              autocomplete="off"
+              class="w-full bg-cozy-input border border-cozy-border rounded-xl py-3.5 pl-10 pr-4 text-sm text-amber-100 placeholder-autumn-500/40 focus:outline-none focus:ring-1 focus:ring-autumn-500 focus:border-autumn-500 transition-all shadow-inner"
+            />
+          </div>
+        </div>
+
+        <!-- Dynamic Error Banner -->
+        <div 
+          id="error-banner" 
+          class="hidden bg-autumn-950/85 border border-autumn-900/50 rounded-xl p-3 flex items-start gap-2.5 text-xs text-autumn-350 animate-fade-in-up"
+        >
+          <i data-lucide="alert-circle" class="w-4.5 h-4.5 text-autumn-550 shrink-0 mt-0.5 animate-bounce"></i>
+          <span id="error-message">Te rugăm să introduci un nume pentru a începe aventura.</span>
+        </div>
+
+        <button 
+          id="btn-continue" 
+          type="button"
+          class="w-full relative group overflow-hidden bg-gradient-to-r from-autumn-700 via-autumn-600 to-amber-600 hover:from-autumn-600 hover:to-amber-500 text-white font-display font-medium py-3.5 px-4 rounded-xl shadow-md hover:shadow-lg hover:shadow-autumn-900/30 active:scale-[0.98] transition-all duration-250 flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <span>Continuă</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ================= ECRANUL 2: Active Mission Screen (Hidden Initially) ================= -->
+    <div id="mission-screen" class="hidden opacity-0 transform scale-95 transition-all duration-500 space-y-6">
+      
+      <!-- Explorer Welcome Title -->
+      <div class="text-center space-y-3">
+        <div class="text-[10px] font-mono text-amber-400 bg-autumn-950/80 py-1 px-3 rounded-full border border-autumn-900/40 inline-block uppercase tracking-wider">
+          Misiunea #1 • Prima Destinație
+        </div>
+        
+        <h2 class="text-2xl font-display font-semibold tracking-tight text-amber-100">
+          Prima Destinație<span id="mission-user-name" class="hidden"></span>
+        </h2>
+      </div>
+
+      <!-- Main Mission Clue and Distance Card -->
+      <div class="bg-gradient-to-b from-cozy-card to-cozy-card/90 border border-cozy-border rounded-2xl p-5 shadow-xl shadow-black/40 space-y-5 backdrop-blur-md relative overflow-hidden">
+        <div class="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-amber-500/30 to-transparent"></div>
+        
+        <!-- Objective Image Source: dominos.jpg with elegant styled ratio and failure fallback placeholder -->
+        <div id="destination-image-container" class="relative rounded-xl overflow-hidden border border-cozy-border/60 shadow-inner group">
+          <img 
+            src="dominos.jpg" 
+            alt="Dominos Bucharest" 
+            referrerPolicy="no-referrer"
+            class="w-full h-44 object-cover transition-transform duration-700 group-hover:scale-105"
+            onerror="this.src='https://images.unsplash.com/photo-1549693578-d683be217e58?auto=format&fit=crop&q=80&w=600&h=400'; console.log('dominos.jpg fallback loaded smoothly');"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-cozy-dark/80 via-transparent to-transparent pointer-events-none"></div>
+          
+          <div class="absolute bottom-3 left-3 text-xs bg-cozy-dark/95 border border-cozy-border/80 py-1 px-2 rounded-md backdrop-blur-sm flex items-center gap-1.5 font-mono text-[9px] tracking-wider text-autumn-300">
+            <i data-lucide="compass" class="w-3.5 h-3.5 text-autumn-500"></i>
+            <span>OBIECTIVUL #1</span>
+          </div>
+        </div>
+
+        <!-- Manual Distance Tracker Grid (Visible before matching target) -->
+        <div id="distance-panel" class="text-center py-4 px-3 bg-cozy-input/60 rounded-xl border border-cozy-border/50 space-y-4 transition-all duration-300">
+          <div class="flex items-center justify-center gap-2 text-[10px] text-autumn-400 uppercase tracking-widest font-mono">
+            <span class="relative flex h-2 w-2">
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-autumn-500"></span>
+            </span>
+            Localizare Manuală
+          </div>
+          
+          <div class="space-y-1">
+            <p class="text-xl sm:text-2xl font-display font-semibold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-autumn-300 to-amber-200">
+              Ești la <span id="distance-meters">—</span> metri distanță
+            </p>
+            <p id="distance-helper-text" class="text-[11px] text-autumn-500">apasă pe buton pentru a calcula distanța</p>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <button 
+              id="btn-refresh-gps"
+              type="button"
+              class="w-full relative group overflow-hidden bg-gradient-to-r from-autumn-700 via-autumn-600 to-amber-600 hover:from-autumn-600 hover:to-amber-500 text-white font-display font-medium py-3 px-4 rounded-xl shadow-md hover:shadow-lg active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <i data-lucide="refresh-cw" class="w-4 h-4 cursor-pointer" id="refresh-icon"></i>
+              <span id="refresh-btn-text">Verifică Distanța / Refresh</span>
+            </button>
+
+
+          </div>
+        </div>
+
+        <!-- GPS Request/Error Warning panel (Initially hidden, revealed if permission denied) -->
+        <div id="gps-error-panel" class="hidden bg-autumn-950/80 border border-autumn-800/40 rounded-xl p-3.5 text-xs text-autumn-200 flex items-start gap-2.5 animate-fade-in-up">
+          <i data-lucide="alert-triangle" class="w-5 h-5 text-autumn-500 shrink-0 mt-0.5"></i>
+          <div class="space-y-1 text-left">
+            <span class="font-bold font-display text-amber-300/90 text-xs">Aparatul are nevoie de locație</span>
+            <p class="text-autumn-400 leading-relaxed text-[11px]">
+              Activează permisiunea GPS pe telefon pentru a naviga. Dacă ești pe desktop, folosește funcția de Simulare sosire de mai sus.
+            </p>
+          </div>
+        </div>
+
+        <!-- Clue Revealed / Step Completed Action (Initially hidden, appears when < 15m) -->
+        <div id="clue-unlocked-panel" class="hidden space-y-4 animate-fade-in-up">
+          <div class="bg-gradient-to-br from-amber-955 to-cozy-dark border border-amber-500/30 rounded-xl p-4 text-center space-y-2">
+            <div class="w-11 h-11 rounded-full bg-amber-550/15 flex items-center justify-center mx-auto text-amber-400 border border-amber-500/30 animate-bounce">
+              <i data-lucide="key" class="w-5.5 h-5.5"></i>
+            </div>
+            <h3 class="font-display font-medium text-amber-300 text-sm">Ai ajuns la prima destinație!</h3>
+            <p class="text-xs text-autumn-350 leading-relaxed max-w-xs mx-auto">
+              Te afli în zona țintă. Telefonul tău a înregistrat prezența. Ești gata de deblocare?
+            </p>
+          </div>
+
+          <button 
+            id="btn-unlock-clue" 
+            type="button"
+            class="w-full relative group overflow-hidden bg-gradient-to-r from-amber-500 via-amber-600 to-autumn-650 hover:from-amber-400 hover:to-autumn-500 text-cozy-dark font-display font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-amber-950/40 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <i data-lucide="unlocked" class="w-4 h-4 text-cozy-dark"></i>
+            <span>Deblochează Indiciul</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= ECRANUL 3: Pasul 3 - Active Mission Screen 2 (Hidden Initially) ================= -->
+    <div id="mission2-screen" class="hidden opacity-0 transform scale-95 transition-all duration-500 space-y-6">
+      
+      <!-- Explorer Welcome Title -->
+      <div class="text-center space-y-3">
+        <div class="text-[10px] font-mono text-amber-400 bg-autumn-950/80 py-1 px-3 rounded-full border border-autumn-900/40 inline-block uppercase tracking-wider">
+          Misiunea #2 • Blind GPS
+        </div>
+        
+        <h2 class="text-2xl font-display font-semibold tracking-tight text-amber-100">
+          Urmează-ți Instinctul
+        </h2>
+        
+        <p class="text-xs text-autumn-250 font-serif italic max-w-xs mx-auto leading-relaxed px-1">
+          Mergi doar după instinct! Nu ai nicio hartă, ci doar un indicator al distanței rămase până la obiectiv. Ghidează-te după numărul de metri de pe ecran. Când ajungi aproape de 0, se va debloca indiciul final.
+        </p>
+      </div>
+
+      <!-- Main Mission Clue and Distance Card -->
+      <div class="bg-gradient-to-b from-cozy-card to-cozy-card/90 border border-cozy-border rounded-2xl p-5 shadow-xl shadow-black/40 space-y-5 backdrop-blur-md relative overflow-hidden">
+        <div class="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-amber-500/30 to-transparent"></div>
+
+        <!-- Manual Distance Tracker Grid for Mission 2 -->
+        <div id="distance-panel2" class="text-center py-4 px-3 bg-cozy-input/60 rounded-xl border border-cozy-border/50 space-y-4 transition-all duration-300">
+          <div class="flex items-center justify-center gap-2 text-[10px] text-autumn-400 uppercase tracking-widest font-mono">
+            <span class="relative flex h-2 w-2">
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+            </span>
+            Senzor GPS Pasiv
+          </div>
+          
+          <div class="space-y-1">
+            <p class="text-xl sm:text-2xl font-display font-semibold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-autumn-300 to-amber-200">
+              Ești la <span id="distance-meters2">—</span> metri distanță
+            </p>
+            <p id="distance-helper-text2" class="text-[11px] text-autumn-500">apasă pe buton pentru a recalcula distanța</p>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <button 
+              id="btn-refresh-gps2"
+              type="button"
+              class="w-full relative group overflow-hidden bg-gradient-to-r from-autumn-700 via-autumn-600 to-amber-600 hover:from-autumn-600 hover:to-amber-500 text-white font-display font-medium py-3 px-4 rounded-xl shadow-md hover:shadow-lg active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <i data-lucide="refresh-cw" class="w-4 h-4 cursor-pointer" id="refresh-icon2"></i>
+              <span id="refresh-btn-text2">Verifică Distanța / Refresh</span>
+            </button>
+
+
+          </div>
+        </div>
+
+        <!-- Clue Code Validation Input Element Group (Initially hidden, revealed on arrival) -->
+        <div id="validation-panel2" class="hidden space-y-4 pt-4 border-t border-cozy-border/30">
+          
+          <!-- Riddle Introduction box -->
+          <div class="bg-gradient-to-br from-amber-950/50 to-cozy-dark border border-amber-500/20 rounded-xl p-4 text-center space-y-2 mb-3">
+            <div class="w-10 h-10 rounded-full bg-amber-550/15 flex items-center justify-center mx-auto text-amber-400 border border-amber-500/30">
+              <i data-lucide="sparkles" class="w-5 h-5 animate-pulse"></i>
+            </div>
+            <h3 class="font-display font-medium text-amber-300 text-sm">Destinație Atinsă! Ghicitoarea</h3>
+            <p class="text-xs text-autumn-300 leading-relaxed max-w-xs mx-auto">
+              Te afli în fața templului învățăturii de pe vremuri. Pentru a debloca calea, dezleagă misterul cifrelor:
+            </p>
+            <p class="font-display font-bold text-amber-300 text-sm py-1.5 leading-snug">
+              Care este numărul obținut dacă aduni opt zeci cu numărul de picioare ale unui om?
+            </p>
+            <p class="text-[11px] text-autumn-400 leading-relaxed max-w-xs mx-auto">
+              Scrie acest număr al elevilor isteți pentru a putea continua aventura!
+            </p>
+          </div>
+
+          <div>
+            <label for="building-number" class="block text-xs font-semibold uppercase tracking-widest text-autumn-300 text-center mb-2">
+              Răspunsul tău la Ghicitoare
+            </label>
+            
+            <div class="relative max-w-[210px] mx-auto">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-autumn-400/60 font-medium">
+                #
+              </span>
+              <input 
+                type="number" 
+                id="building-number" 
+                placeholder="Ex. 15 sau 40" 
+                class="w-full bg-cozy-input border border-cozy-border rounded-xl py-3 pl-9 pr-4 text-center font-display font-bold text-lg text-amber-100 placeholder-autumn-500/30 focus:outline-none focus:ring-1 focus:ring-autumn-500 focus:border-autumn-500 transition-all shadow-inner"
+              />
+            </div>
+          </div>
+
+          <!-- Error Alert State banner for building validation checks -->
+          <div 
+            id="clue-error-banner" 
+            class="hidden bg-autumn-950/85 border border-autumn-900/50 rounded-xl p-3 flex justify-center items-center gap-2 text-xs text-autumn-300 animate-fade-in-up"
+          >
+            <i data-lucide="x-circle" class="w-4 h-4 text-autumn-550"></i>
+            <span>Nu e numărul corect, mai caută.</span>
+          </div>
+
+          <!-- Success banner and Next Mission triggers -->
+          <div 
+            id="clue-success-banner" 
+            class="hidden bg-emerald-950/80 border border-emerald-800/40 rounded-xl p-4 text-center space-y-3 text-xs text-emerald-200 animate-fade-in-up"
+          >
+            <div class="flex items-center justify-center gap-1.5 text-emerald-400 font-semibold font-display text-sm">
+              <i data-lucide="shield-check" class="w-4.5 h-4.5"></i>
+              <span>Cod acceptat! Locație securizată.</span>
+            </div>
+            <p class="text-autumn-300 leading-relaxed text-[11px] max-w-xs mx-auto">
+              Felicitări! Ai decodat indiciul ascuns pe fațada bătrânei clădiri istorice din București.
+            </p>
+            
+            <button 
+              id="btn-next-mission" 
+              type="button"
+              class="w-full bg-gradient-to-r from-emerald-700 via-emerald-600 to-emerald-505 hover:from-emerald-600 text-white font-display font-semibold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer mt-2"
+            >
+              <span>Mergi la următoarea misiune</span>
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <button 
+            id="btn-verify-clue" 
+            type="button"
+            class="w-full relative group overflow-hidden bg-gradient-to-r from-autumn-700 via-autumn-600 to-amber-600 hover:from-autumn-600 hover:to-amber-500 text-white font-display font-medium py-3.5 px-4 rounded-xl shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <span>Verifică Indiciul</span>
+            <i data-lucide="check" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- GPS Request/Error Warning panel for Mission 2 (Initially hidden) -->
+        <div id="gps-error-panel2" class="hidden bg-autumn-950/80 border border-autumn-800/40 rounded-xl p-3.5 text-xs text-autumn-200 flex items-start gap-2.5 animate-fade-in-up">
+          <i data-lucide="alert-triangle" class="w-5 h-5 text-autumn-500 shrink-0 mt-0.5"></i>
+          <div class="space-y-1 text-left">
+            <span class="font-bold font-display text-amber-300/90 text-xs">Senzorul are nevoie de locație</span>
+            <p class="text-autumn-400 leading-relaxed text-[11px]">
+              Activează permisiunea GPS pe telefon sau utilizează simularile noastre de mediu.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= ECRANUL 4: Misiunea 3 - Active Mission Screen 3 (Hidden Initially) ================= -->
+    <div id="mission3-screen" class="hidden opacity-0 transform scale-95 transition-all duration-500 space-y-6">
+      
+      <!-- Explorer Welcome Title -->
+      <div class="text-center space-y-3">
+        <div class="text-[10px] font-mono text-amber-400 bg-autumn-950/80 py-1 px-3 rounded-full border border-autumn-900/40 inline-block uppercase tracking-wider">
+          Misiunea #3 • Marele Instinct
+        </div>
+        
+        <h2 class="text-2xl font-display font-semibold tracking-tight text-amber-100">
+          Următoarea Destinație
+        </h2>
+        
+        <p class="text-xs text-autumn-250 font-serif italic max-w-xs mx-auto leading-relaxed px-1">
+          Următoarea destinație te așteaptă. Mergi după instinct și urmărește metrii. Când ajungi la 0, privește în jur și răspunde la întrebare.
+        </p>
+      </div>
+
+      <!-- Main Mission Clue and Distance Card -->
+      <div class="bg-gradient-to-b from-cozy-card to-cozy-card/90 border border-cozy-border rounded-2xl p-5 shadow-xl shadow-black/40 space-y-5 backdrop-blur-md relative overflow-hidden">
+        <div class="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-amber-500/30 to-transparent"></div>
+
+        <!-- Manual Distance Tracker Grid for Mission 3 -->
+        <div id="distance-panel3" class="text-center py-4 px-3 bg-cozy-input/60 rounded-xl border border-cozy-border/50 space-y-4 transition-all duration-300">
+          <div class="flex items-center justify-center gap-2 text-[10px] text-autumn-400 uppercase tracking-widest font-mono">
+            <span class="relative flex h-2 w-2">
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+            </span>
+            Senzor GPS Pasiv M3
+          </div>
+          
+          <div class="space-y-1">
+            <p class="text-xl sm:text-2xl font-display font-semibold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-autumn-300 to-amber-200">
+              Ești la <span id="distance-meters3">—</span> metri distanță
+            </p>
+            <p id="distance-helper-text3" class="text-[11px] text-autumn-500">apasă pe buton pentru a recalcula distanța</p>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <button 
+              id="btn-refresh-gps3"
+              type="button"
+              class="w-full relative group overflow-hidden bg-gradient-to-r from-autumn-700 via-autumn-600 to-amber-600 hover:from-autumn-600 hover:to-amber-500 text-white font-display font-medium py-3 px-4 rounded-xl shadow-md hover:shadow-lg active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <i data-lucide="refresh-cw" class="w-4 h-4 cursor-pointer" id="refresh-icon3"></i>
+              <span id="refresh-btn-text3">Verifică Distanța / Refresh</span>
+            </button>
+
+
+          </div>
+        </div>
+
+        <!-- Clue Code Validation Input Element Group for Mission 3 (Initially hidden, revealed on arrival, hides GPS) -->
+        <div id="validation-panel3" class="hidden space-y-4 pt-4">
+          
+          <!-- Riddle Introduction box -->
+          <div class="bg-gradient-to-br from-amber-95/40 to-cozy-dark border border-amber-500/20 rounded-xl p-4 text-center space-y-2 mb-3">
+            <div class="w-10 h-10 rounded-full bg-amber-550/15 flex items-center justify-center mx-auto text-amber-400 border border-amber-500/30">
+              <i data-lucide="help-circle" class="w-5 h-5 animate-pulse"></i>
+            </div>
+            <h3 class="font-display font-medium text-amber-300 text-sm">Destinație Atinsă! Ghicitoarea Finală</h3>
+            <p class="text-xs text-autumn-305 leading-relaxed max-w-xs mx-auto">
+              Ai ajuns la locul final călăuzit de instinct! Acum, privește în jur, reflectează și răspunde la întrebare:
+            </p>
+            <p class="font-display font-bold text-amber-100 text-base py-1">
+              Pe ce dată suntem?
+            </p>
+          </div>
+
+          <div>
+            <div class="relative max-w-xs mx-auto">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-autumn-400/60">
+                <i data-lucide="calendar" class="w-4 h-4"></i>
+              </span>
+              <input 
+                type="text" 
+                id="riddle-answer" 
+                placeholder="Scrie răspunsul aici..." 
+                autocomplete="off"
+                class="w-full bg-cozy-input border border-cozy-border rounded-xl py-3 pl-10 pr-4 text-center text-sm font-semibold text-amber-100 placeholder-autumn-500/30 focus:outline-none focus:ring-1 focus:ring-autumn-500 focus:border-autumn-500 transition-all shadow-inner"
+              />
+            </div>
+          </div>
+
+          <!-- Error Alert State banner for M3 riddle validation -->
+          <div 
+            id="riddle-error-banner" 
+            class="hidden bg-autumn-950/85 border border-autumn-900/50 rounded-xl p-3 flex justify-center items-center gap-2 text-xs text-red-400 animate-fade-in-up"
+          >
+            <i data-lucide="x-circle" class="w-4 h-4 text-red-550"></i>
+            <span>Răspuns incorect. Mai gândește-te!</span>
+          </div>
+
+          <!-- Success banner and Final Screen trigger -->
+          <div 
+            id="riddle-success-banner" 
+            class="hidden bg-emerald-950/80 border border-emerald-800/40 rounded-xl p-4 text-center space-y-3 text-xs text-emerald-200 animate-fade-in-up"
+          >
+            <div class="flex items-center justify-center gap-1.5 text-emerald-400 font-semibold font-display text-sm">
+              <i data-lucide="party-popper" class="w-4.5 h-4.5"></i>
+              <span>Răspuns corect! Misiune completată.</span>
+            </div>
+            <p class="text-autumn-300 leading-relaxed text-[11px] max-w-xs mx-auto">
+              Excepțional! Ai oferit răspunsul istoric exact: <span class="font-bold text-amber-305">1 decembrie 1918</span>.
+            </p>
+            
+            <button 
+              id="btn-complete-adventure" 
+              type="button"
+              class="w-full bg-gradient-to-r from-emerald-700 via-emerald-600 to-emerald-500 hover:from-emerald-600 text-white font-display font-semibold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer mt-2"
+            >
+              <span>Mergi mai departe</span>
+              <i data-lucide="trophy" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <button 
+            id="btn-verify-riddle" 
+            type="button"
+            class="w-full relative group overflow-hidden bg-gradient-to-r from-autumn-700 via-autumn-600 to-amber-600 hover:from-autumn-600 hover:to-amber-500 text-white font-display font-medium py-3.5 px-4 rounded-xl shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <span>Trimite Răspuns</span>
+            <i data-lucide="send" class="w-4 h-4 cursor-pointer"></i>
+          </button>
+        </div>
+
+        <!-- GPS Request/Error Warning panel for Mission 3 (Initially hidden) -->
+        <div id="gps-error-panel3" class="hidden bg-autumn-950/80 border border-autumn-800/40 rounded-xl p-3.5 text-xs text-autumn-200 flex items-start gap-2.5 animate-fade-in-up">
+          <i data-lucide="alert-triangle" class="w-5 h-5 text-autumn-500 shrink-0 mt-0.5"></i>
+          <div class="space-y-1 text-left">
+            <span class="font-bold font-display text-amber-300/90 text-xs">Senzorul are nevoie de locație</span>
+            <p class="text-autumn-400 leading-relaxed text-[11px]">
+              Activează permisiunea GPS pe telefon sau utilizează simularile noastre de mediu.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= ECRANUL 4.5: Misiunea 4 - Active Mission Screen 4 (Hidden Initially) ================= -->
+    <div id="mission4-screen" class="hidden opacity-0 transform scale-95 transition-all duration-500 space-y-6">
+      
+      <!-- Explorer Welcome Title -->
+      <div class="text-center space-y-3">
+        <div class="text-[10px] font-mono text-amber-400 bg-autumn-950/80 py-1 px-3 rounded-full border border-autumn-900/40 inline-block uppercase tracking-wider">
+          Misiunea #4 • Busola Misterioasă
+        </div>
+        
+        <h2 class="text-2xl font-display font-semibold tracking-tight text-amber-100">
+          Urmează Busola
+        </h2>
+        
+        <p class="text-xs text-autumn-250 font-serif italic max-w-xs mx-auto leading-relaxed px-1">
+          Ești aproape de intrarea la metrou. Urmează busola pentru a ajunge la punct fix.
+        </p>
+      </div>
+
+      <!-- Main Mission Clue and Distance Card -->
+      <div class="bg-gradient-to-b from-cozy-card to-cozy-card/90 border border-cozy-border rounded-2xl p-5 shadow-xl shadow-black/40 space-y-5 backdrop-blur-md relative overflow-hidden">
+        <div class="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-amber-500/30 to-transparent"></div>
+
+        <!-- Manual Distance Tracker & Compass Grid for Mission 4 -->
+        <div id="distance-panel4" class="text-center py-4 px-3 bg-cozy-input/60 rounded-xl border border-cozy-border/50 space-y-4 transition-all duration-300">
+          
+          <div class="flex items-center justify-center gap-2 text-[10px] text-autumn-400 uppercase tracking-widest font-mono">
+            <span class="relative flex h-2 w-2">
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500 animate-ping"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+            </span>
+            Senzor GPS Real-Time cu Busolă
+          </div>
+
+          <!-- Compass Dial Indicator Interface element -->
+          <div id="compass-direction-container" class="flex flex-col items-center justify-center py-2">
+            <div class="relative w-24 h-24 rounded-full border-2 border-amber-500/35 bg-cozy-input/80 flex items-center justify-center shadow-lg shadow-black/30">
+              
+              <!-- Static Compass rose references for North/South/East/West -->
+              <span class="absolute top-1 text-[9px] font-mono font-bold text-amber-400/80">N</span>
+              <span class="absolute bottom-1 text-[9px] font-mono font-bold text-autumn-500/80">S</span>
+              <span class="absolute left-1.5 text-[9px] font-mono font-bold text-autumn-500/85">W</span>
+              <span class="absolute right-1.5 text-[9px] font-mono font-bold text-autumn-500/85">E</span>
+
+              <!-- Rotește indicatorul busolei dinamic în timp real -->
+              <div id="compass-needle" class="absolute w-full h-full transition-transform duration-300 ease-out flex items-center justify-center" style="transform: rotate(0deg);">
+                <!-- NEEDLE: pointing to destination coordinates -->
+                <div class="w-1.5 h-12 bg-gradient-to-t from-autumn-700 via-amber-500 to-amber-300 rounded-full relative" style="transform: translateY(-12px);"></div>
+                <div class="absolute w-2 h-2 rounded-full bg-amber-200"></div>
+              </div>
+
+            </div>
+            <p id="compass-angle-text" class="text-[10px] text-autumn-400 font-mono mt-2 tracking-wider">Direcție: —°</p>
+            
+            <!-- Dynamic Simulator Slider for manual desktop/laptop testing -->
+            <div class="w-full max-w-[150px] mx-auto pt-2 space-y-1">
+              <label for="compass-sim-slider" class="text-[9px] text-autumn-500 font-mono block">Rotire manuală (Simulare Desktop):</label>
+              <input 
+                type="range" 
+                id="compass-sim-slider" 
+                min="0" 
+                max="360" 
+                value="0" 
+                class="w-full h-1.5 bg-cozy-dark/80 rounded-lg appearance-none cursor-pointer accent-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              />
+            </div>
+          </div>
+          
+          <div class="space-y-1">
+            <p class="text-xl sm:text-2xl font-display font-semibold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-autumn-300 to-amber-200">
+              Ești la <span id="distance-meters4">—</span> metri distanță
+            </p>
+            <p id="distance-helper-text4" class="text-[11px] text-autumn-500">apasă pe buton pentru a recalcula distanța</p>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <button 
+              id="btn-refresh-gps4"
+              type="button"
+              class="w-full relative group overflow-hidden bg-gradient-to-r from-autumn-700 via-autumn-600 to-amber-600 hover:from-autumn-600 hover:to-amber-500 text-white font-display font-medium py-3 px-4 rounded-xl shadow-md hover:shadow-lg active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <i data-lucide="refresh-cw" class="w-4 h-4 cursor-pointer" id="refresh-icon4"></i>
+              <span id="refresh-btn-text4">Verifică Distanța / Refresh</span>
+            </button>
+
+
+          </div>
+        </div>
+
+        <!-- Clue Code Validation Input Group for Mission 4 (Initially hidden, revealed on arrival, hides GPS & compass) -->
+        <div id="validation-panel4" class="hidden space-y-4 pt-4">
+          
+          <!-- Riddle Introduction box -->
+          <div class="bg-gradient-to-br from-amber-95/40 to-cozy-dark border border-amber-500/20 rounded-xl p-4 text-center space-y-2 mb-3">
+            <div class="w-10 h-10 rounded-full bg-amber-550/15 flex items-center justify-center mx-auto text-amber-400 border border-amber-500/30">
+              <i data-lucide="help-circle" class="w-5 h-5 animate-pulse"></i>
+            </div>
+            <h3 class="font-display font-medium text-amber-300 text-sm">Destinație Atinsă! Provocarea Finală</h3>
+            <p class="text-xs text-autumn-305 leading-relaxed max-w-xs mx-auto">
+              Ai ajuns la destinație! Acum, privește în jur, reflectează și răspunde la întrebare:
+            </p>
+            <p class="font-display font-bold text-amber-100 text-base py-1">
+              Câte scări sunt la metrou până la turnichete?
+            </p>
+          </div>
+
+          <div>
+            <div class="relative max-w-xs mx-auto">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-autumn-400/60 font-semibold text-xs">
+                #
+              </span>
+              <input 
+                type="number" 
+                id="stairs-answer" 
+                placeholder="Scrie numărul de scări..." 
+                autocomplete="off"
+                class="w-full bg-cozy-input border border-cozy-border rounded-xl py-3 pl-8 pr-4 text-center text-sm font-semibold text-amber-100 placeholder-autumn-500/30 focus:outline-none focus:ring-1 focus:ring-autumn-500 focus:border-autumn-500 transition-all shadow-inner"
+              />
+            </div>
+          </div>
+
+          <!-- Error Alert State banner for stairs validation -->
+          <div 
+            id="stairs-error-banner" 
+            class="hidden bg-autumn-950/85 border border-autumn-900/50 rounded-xl p-3 flex justify-center items-center gap-2 text-xs text-red-400 animate-fade-in-up"
+          >
+            <i data-lucide="x-circle" class="w-4 h-4 text-red-550"></i>
+            <span>Mai numără o dată, nu e ăsta numărul.</span>
+          </div>
+
+          <!-- Success banner and Final finish adventure trigger -->
+          <div 
+            id="stairs-success-banner" 
+            class="hidden bg-emerald-950/80 border border-emerald-800/40 rounded-xl p-4 text-center space-y-3 text-xs text-emerald-200 animate-fade-in-up"
+          >
+            <div class="flex items-center justify-center gap-1.5 text-emerald-400 font-semibold font-display text-sm">
+              <i data-lucide="party-popper" class="w-4.5 h-4.5"></i>
+              <span>Răspuns corect! Provocare completată.</span>
+            </div>
+            <p class="text-autumn-300 leading-relaxed text-[11px] max-w-xs mx-auto">
+              Corect! Acum ia metroul și coboară la Grigorescu.
+            </p>
+            
+            <button 
+              id="btn-finish-adventure" 
+              type="button"
+              class="w-full bg-gradient-to-r from-emerald-700 via-emerald-600 to-emerald-500 hover:from-emerald-600 text-white font-display font-semibold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer mt-2"
+            >
+              <span>Finalizează Misiunea</span>
+              <i data-lucide="award" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <button 
+            id="btn-verify-stairs" 
+            type="button"
+            class="w-full relative group overflow-hidden bg-gradient-to-r from-autumn-700 via-autumn-600 to-amber-600 hover:from-autumn-600 hover:to-amber-500 text-white font-display font-medium py-3.5 px-4 rounded-xl shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <span>Trimite Răspuns</span>
+            <i data-lucide="send" class="w-4 h-4 cursor-pointer"></i>
+          </button>
+        </div>
+
+        <!-- GPS Request/Error Warning panel for Mission 4 (Initially hidden) -->
+        <div id="gps-error-panel4" class="hidden bg-autumn-950/80 border border-autumn-800/40 rounded-xl p-3.5 text-xs text-autumn-200 flex items-start gap-2.5 animate-fade-in-up">
+          <i data-lucide="alert-triangle" class="w-5 h-5 text-autumn-500 shrink-0 mt-0.5"></i>
+          <div class="space-y-1 text-left">
+            <span class="font-bold font-display text-amber-300/90 text-xs">Senzorul are nevoie de locație</span>
+            <p class="text-autumn-400 leading-relaxed text-[11px]">
+              Activează permisiunea GPS pe telefon sau utilizează simularile noastre de mediu.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= ECRANUL 5: Final Adventure Screen (Hidden Initially) ================= -->
+    <div id="finish-screen" class="hidden opacity-0 transform scale-95 transition-all duration-500 space-y-6 text-center">
+      
+      <div class="relative inline-block mx-auto">
+        <div class="absolute inset-0 rounded-full bg-amber-500/20 blur-xl animate-pulse"></div>
+        <div class="w-24 h-24 rounded-full border border-amber-500/30 bg-cozy-card flex items-center justify-center relative shadow-lg">
+          <i data-lucide="award" class="w-12 h-12 text-amber-400 animate-bounce"></i>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <h2 class="text-3xl font-display font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-autumn-400 to-amber-300">
+          Felicitări, <span id="final-user-name" class="font-extrabold text-amber-100">Exploratorule</span>!
+        </h2>
+        
+        <p class="font-serif text-base text-autumn-200/90 italic">
+          Ai cucerit secretele ascunse ale Bucureștiului!
+        </p>
+        
+        <div class="bg-gradient-to-b from-cozy-card to-cozy-card/90 border border-cozy-border rounded-2xl p-6 shadow-xl space-y-4 max-w-xs mx-auto text-left">
+          <p class="text-xs text-autumn-300 leading-relaxed">
+            Ai demonstrat un instinct formidabil de explorator, ai navigat cu succes folosind senzorii GPS ai timpului și ai dezlegat ghicitoarea istorică a Marii Uniri. 
+          </p>
+          <div class="py-2 border-t border-b border-cozy-border/40 font-mono text-xs text-amber-400 flex justify-between items-center px-2">
+            <span>Explorator:</span>
+            <span id="final-stats-name" class="font-bold text-amber-200"></span>
+          </div>
+          <div class="font-mono text-xs text-autumn-400 flex justify-between items-center px-2">
+            <span>Status Aventura:</span>
+            <span class="text-emerald-400 font-bold flex items-center gap-1 justify-end">
+              <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> COMPLETĂ
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <button 
+        id="btn-restart-adventure" 
+        type="button"
+        class="w-full max-w-[240px] mx-auto relative group overflow-hidden bg-gradient-to-r from-autumn-700 via-autumn-600 to-amber-600 hover:from-autumn-600 hover:to-amber-500 text-white font-display font-medium py-3.5 px-4 rounded-xl shadow-md active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+      >
+        <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+        <span>Reîncepe Expediția</span>
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Clean, Empty Footer as requested -->
+  <footer class="w-full max-w-sm mx-auto pb-4 px-6 text-center z-10 relative"></footer>
+
+  <!-- Vanilla JS Engine logic -->
+  <script>
+    // Initialize Lucide vector icons initially
+    lucide.createIcons();
+
+    // 1. Dynamic Falling Leaves Particle Generator
+    function createFallingLeaves() {
+      const container = document.getElementById('leaves-container');
+      if (!container) return;
+      
+      const colors = ['#d17251', '#c25838', '#9d4229', '#f59e0b', '#b45309', '#78350f'];
+      const leafTypes = [
+        // Maple leaf contour path
+        `<path d="M12 2C11.5 4 9.5 5 9 6.5C8.5 8 9.5 9 8 10C6.5 11 5 10 4 11C3 12 3.5 13.5 4.5 14C5.5 14.5 7 13.5 8 14.5C9 15.5 8 17 9 18.5C10 20 11.5 19.5 12 21.5C12.5 19.5 14 20 15 18.5C16 17 15 15.5 16 14.5C17 13.5 18.5 14.5 19.5 14C20.5 13.5 21 12 20 11C19 10 17.5 11 16 10C14.5 9 15.5 8 15 6.5C14.5 5 12.5 4 12 2Z" fill="CURRENT_COLOR" opacity="0.8"/>`,
+        // Simple oval leaf
+        `<path d="M12 2C8 6 6 12 12 22C18 12 16 6 12 2Z" fill="CURRENT_COLOR" opacity="0.75"/>`,
+        // Oak-like wavy contour path
+        `<path d="M12 2C10.5 3.5 11 5 9.5 6.5C8 8 7 7.5 6 9C5 10.5 6 12 5 13.5C4 15 4.5 16.5 6 17.5C7.5 18.5 8.5 17 10 18.5C11.5 20 11 21.5 12 22C13 21.5 12.5 20 14 18.5C15.5 17 16.5 18.5 18 17.5C19.5 16.5 20 15 19 13.5C18 12 19 10.5 18 9C17 7.5 16 8 14.5 6.5C13 5 13.5 3.5 12 2Z" fill="CURRENT_COLOR" opacity="0.8"/>`
+      ];
+
+      const leafCount = 10; // Clean performance, gorgeous backdrop
+      
+      for (let i = 0; i < leafCount; i++) {
+        const leaf = document.createElement('div');
+        leaf.className = 'leaf-particle';
+        
+        const size = Math.random() * 18 + 12; // 12px to 30px
+        const left = Math.random() * 100;
+        const delay = Math.random() * 12;
+        const duration = Math.random() * 8 + 12; // 12s to 20s
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        const randomPath = leafTypes[Math.floor(Math.random() * leafTypes.length)].replace('CURRENT_COLOR', randomColor);
+        
+        leaf.style.left = `${left}vw`;
+        leaf.style.width = `${size}px`;
+        leaf.style.height = `${size}px`;
+        leaf.style.animation = `leafFall ${duration}s linear ${delay}s infinite`;
+        
+        leaf.innerHTML = `
+          <svg viewBox="0 0 24 24" width="100%" height="100%">
+            ${randomPath}
+          </svg>
+        `;
+        
+        container.appendChild(leaf);
+      }
+    }
+
+    createFallingLeaves();
+
+    // 2. Coordonate Țintă - Pasul 2, Pasul 3, Pasul 4 (Misiunea 3) & Pasul 5 (Misiunea 4)
+    const TARGET_LAT = 44.41366563568896;
+    const TARGET_LNG = 26.178631158547372;
+
+    const TARGET2_LAT = 44.415558;
+    const TARGET2_LNG = 26.178644;
+
+    const TARGET3_LAT = 44.416346;
+    const TARGET3_LNG = 26.175731;
+
+    const TARGET4_LAT = 44.411107;
+    const TARGET4_LNG = 26.173165;
+
+    let userNameValue = "";
+
+    // Active tracking and compass state variables for Mission 4
+    let currentHeading = 0;
+    let currentBearing = 0;
+    let mission4WatchId = null;
+
+    // DOM References
+    const btnContinue = document.getElementById('btn-continue');
+    const inputUsername = document.getElementById('username');
+    const errorBanner = document.getElementById('error-banner');
+    
+    // Screens References
+    const setupScreen = document.getElementById('setup-screen');
+    const missionScreen = document.getElementById('mission-screen');
+    const mission2Screen = document.getElementById('mission2-screen');
+    const mission3Screen = document.getElementById('mission3-screen');
+    const mission4Screen = document.getElementById('mission4-screen');
+    const finishScreen = document.getElementById('finish-screen');
+    const missionUserName = document.getElementById('mission-user-name');
+    const missionBadge = document.getElementById('mission-badge');
+
+    // Mission 1 UI Elements
+    const destinationImageContainer = document.getElementById('destination-image-container');
+    const distancePanel = document.getElementById('distance-panel');
+    const distanceMeters = document.getElementById('distance-meters');
+    const gpsErrorPanel = document.getElementById('gps-error-panel');
+    const clueUnlockedPanel = document.getElementById('clue-unlocked-panel');
+    const btnUnlockClue = document.getElementById('btn-unlock-clue');
+    const btnSimulateGps = document.getElementById('btn-simulate-gps');
+    const btnRefreshGps = document.getElementById('btn-refresh-gps');
+    const refreshIcon = document.getElementById('refresh-icon');
+
+    // Mission 2 UI Elements
+    const distanceMeters2 = document.getElementById('distance-meters2');
+    const btnRefreshGps2 = document.getElementById('btn-refresh-gps2');
+    const refreshIcon2 = document.getElementById('refresh-icon2');
+    const btnSimulateGps2 = document.getElementById('btn-simulate-gps2');
+    const gpsErrorPanel2 = document.getElementById('gps-error-panel2');
+    const distancePanel2 = document.getElementById('distance-panel2');
+    
+    // Validation Part 2 UI Elements
+    const buildingNumberInput = document.getElementById('building-number');
+    const clueErrorBanner = document.getElementById('clue-error-banner');
+    const clueSuccessBanner = document.getElementById('clue-success-banner');
+    const btnVerifyClue = document.getElementById('btn-verify-clue');
+    const btnNextMission = document.getElementById('btn-next-mission');
+
+    // Mission 3 UI Elements
+    const distanceMeters3 = document.getElementById('distance-meters3');
+    const btnRefreshGps3 = document.getElementById('btn-refresh-gps3');
+    const refreshIcon3 = document.getElementById('refresh-icon3');
+    const btnSimulateGps3 = document.getElementById('btn-simulate-gps3');
+    const gpsErrorPanel3 = document.getElementById('gps-error-panel3');
+    const distancePanel3 = document.getElementById('distance-panel3');
+    const validationPanel3 = document.getElementById('validation-panel3');
+    const riddleAnswerInput = document.getElementById('riddle-answer');
+    const riddleErrorBanner = document.getElementById('riddle-error-banner');
+    const riddleSuccessBanner = document.getElementById('riddle-success-banner');
+    const btnVerifyRiddle = document.getElementById('btn-verify-riddle');
+    const btnCompleteAdventure = document.getElementById('btn-complete-adventure');
+
+    // Mission 4 UI Elements
+    const distanceMeters4 = document.getElementById('distance-meters4');
+    const btnRefreshGps4 = document.getElementById('btn-refresh-gps4');
+    const refreshIcon4 = document.getElementById('refresh-icon4');
+    const btnSimulateGps4 = document.getElementById('btn-simulate-gps4');
+    const gpsErrorPanel4 = document.getElementById('gps-error-panel4');
+    const distancePanel4 = document.getElementById('distance-panel4');
+    const compassNeedle = document.getElementById('compass-needle');
+    const compassAngleText = document.getElementById('compass-angle-text');
+    const validationPanel4 = document.getElementById('validation-panel4');
+    const stairsAnswerInput = document.getElementById('stairs-answer');
+    const stairsErrorBanner = document.getElementById('stairs-error-banner');
+    const stairsSuccessBanner = document.getElementById('stairs-success-banner');
+    const btnVerifyStairs = document.getElementById('btn-verify-stairs');
+    const btnFinishAdventure = document.getElementById('btn-finish-adventure');
+
+    // Finish View Elements
+    const finalUserName = document.getElementById('final-user-name');
+    const finalStatsName = document.getElementById('final-stats-name');
+    const btnRestartAdventure = document.getElementById('btn-restart-adventure');
+
+    // 3. Formula Haversine pentru a calcula distanța în metri
+    function getHaversineDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371000; // Raza pământului în metri
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = 
+         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+         Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+         Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    // 3 b. Calculare bearing (direcție unghiulară în grade) de la o locație la alta
+    function getBearing(lat1, lon1, lat2, lon2) {
+      const lat1Rad = lat1 * Math.PI / 180;
+      const lat2Rad = lat2 * Math.PI / 180;
+      const dLonRad = (lon2 - lon1) * Math.PI / 180;
+      
+      const y = Math.sin(dLonRad) * Math.cos(lat2Rad);
+      const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) - Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLonRad);
+      const brng = Math.atan2(y, x) * 180 / Math.PI;
+      return (brng + 360) % 360;
+    }
+
+    // 3 c. Update rotating compass needle and textual direction angle guidance
+    function updateCompassNeedle() {
+      // Rotate needle relative to user's heading: rotation = (bearing - heading)
+      const needleRotation = (currentBearing - currentHeading + 360) % 360;
+      if (compassNeedle) {
+        compassNeedle.style.transform = `rotate(${needleRotation}deg)`;
+      }
+      if (compassAngleText) {
+        compassAngleText.innerHTML = `Direcție: <span class="font-bold text-amber-300 font-mono text-[11px]">${Math.round(needleRotation)}°</span> <span class="text-autumn-450 text-[8px] tracking-wider block sm:inline sm:ml-1">(Țintă: ${Math.round(currentBearing)}° | Busolă: ${Math.round(currentHeading)}°)</span>`;
+      }
+    }
+
+    // 3 d. Process orientations from device gyroscope/magnetometer raw events
+    function handleOrientation(event) {
+      let heading = undefined;
+
+      // Check standard iOS Compass Heading field first of all
+      if (event.webkitCompassHeading !== undefined && event.webkitCompassHeading !== null) {
+        heading = event.webkitCompassHeading;
+      } else if (event.alpha !== null && event.alpha !== undefined) {
+        // Android fallback calculations (0 to 360 CCW to CW)
+        heading = (360 - event.alpha) % 360;
+      }
+
+      if (heading !== undefined && heading !== null) {
+        currentHeading = heading;
+        updateCompassNeedle();
+      }
+    }
+
+    // 3 e. Register active device orientation tracking with iOS and Android fallbacks
+    function enableCompassSensors() {
+      try {
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+          DeviceOrientationEvent.requestPermission()
+            .then(permissionState => {
+              if (permissionState === 'granted') {
+                window.addEventListener('deviceorientation', handleOrientation, true);
+                window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+              }
+            })
+            .catch(err => console.warn("Permission request rejected or blocked in interactive container:", err));
+        } else {
+          window.addEventListener('deviceorientation', handleOrientation, true);
+          window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+        }
+      } catch (e) {
+        console.warn("Sensor configurations skipped in this client environment sandbox:", e.message);
+      }
+    }
+
+    // 4. Activare Ecran 2 & Inițiere calcul manual distanță
+    function switchScreens() {
+      // Fade out setup screen
+      setupScreen.classList.add('opacity-0', 'scale-95');
+      
+      setTimeout(() => {
+        setupScreen.classList.add('hidden');
+        
+        // Show mission screen 1
+        missionScreen.classList.remove('hidden');
+        setTimeout(() => {
+          missionScreen.classList.remove('opacity-0', 'scale-95');
+          missionScreen.classList.add('opacity-100', 'scale-100');
+        }, 30);
+
+        // Perform initial calculation on transition
+        calculateManualDistance();
+      }, 450);
+    }
+
+    // Activare Ecran 3 (Misiunea 2)
+    function switchScreensToMission2() {
+      // Fade out mission screen 1
+      missionScreen.classList.add('opacity-0', 'scale-95');
+      
+      setTimeout(() => {
+        missionScreen.classList.add('hidden');
+        
+        // Show mission screen 2
+        mission2Screen.classList.remove('hidden');
+        missionBadge.textContent = "Bucharest • Misiunea 2";
+        
+        setTimeout(() => {
+          mission2Screen.classList.remove('opacity-0', 'scale-95');
+          mission2Screen.classList.add('opacity-100', 'scale-100');
+        }, 30);
+
+        // Perform initial calculation for Mission 2 Target
+        calculateManualDistance2();
+      }, 450);
+    }
+
+    // Activare Ecran 4 (Misiunea 3)
+    function switchScreensToMission3() {
+      // Fade out mission screen 2
+      mission2Screen.classList.add('opacity-0', 'scale-95');
+      
+      setTimeout(() => {
+        mission2Screen.classList.add('hidden');
+        
+        // Show mission screen 3
+        mission3Screen.classList.remove('hidden');
+        missionBadge.textContent = "Bucharest • Misiunea 3";
+        
+        setTimeout(() => {
+          mission3Screen.classList.remove('opacity-0', 'scale-95');
+          mission3Screen.classList.add('opacity-100', 'scale-100');
+        }, 30);
+
+        // Perform initial calculation for Mission 3 Target
+        calculateManualDistance3();
+      }, 450);
+    }
+
+    // Activare Ecran 4.5 (Misiunea 4)
+    function switchScreensToMission4() {
+      // Fade out mission screen 3
+      mission3Screen.classList.add('opacity-0', 'scale-95');
+      
+      setTimeout(() => {
+        mission3Screen.classList.add('hidden');
+        
+        // Show mission screen 4
+        mission4Screen.classList.remove('hidden');
+        missionBadge.textContent = "Bucharest • Misiunea 4";
+        
+        setTimeout(() => {
+          mission4Screen.classList.remove('opacity-0', 'scale-95');
+          mission4Screen.classList.add('opacity-100', 'scale-100');
+        }, 30);
+
+        // Perform initial calculation for Mission 4 Target
+        calculateManualDistance4();
+      }, 450);
+    }
+
+    // Activare Ecran Final
+    function switchScreensToFinish() {
+      // Fade out mission screen 4
+      mission4Screen.classList.add('opacity-0', 'scale-95');
+      
+      setTimeout(() => {
+        mission4Screen.classList.add('hidden');
+        
+        // Show finish screen
+        finishScreen.classList.remove('hidden');
+        missionBadge.textContent = "Aventură Completă!";
+        
+        // Update user names across stats cards
+        finalUserName.textContent = userNameValue;
+        finalStatsName.textContent = userNameValue;
+        
+        setTimeout(() => {
+          finishScreen.classList.remove('opacity-0', 'scale-95');
+          finishScreen.classList.add('opacity-100', 'scale-100');
+        }, 30);
+      }, 450);
+    }
+
+    // 5. GPS Location Check for Mission 1 (Manual Refresh)
+    function calculateManualDistance() {
+      if (!navigator.geolocation) {
+        showGPSError();
+        return;
+      }
+
+      if (refreshIcon) {
+        refreshIcon.classList.add('animate-spin');
+      }
+      if (btnRefreshGps) {
+        btnRefreshGps.disabled = true;
+      }
+
+      const geoOptions = {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 12000
+      };
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          
+          const distance = getHaversineDistance(lat, lng, TARGET_LAT, TARGET_LNG);
+          const roundedDistance = Math.round(distance);
+          
+          distanceMeters.textContent = roundedDistance;
+          gpsErrorPanel.classList.add('hidden');
+
+          stopSpinner();
+
+          if (roundedDistance <= 5) {
+            handleTargetReached();
+          }
+        },
+        (error) => {
+          console.warn("GPS lookup error: ", error.message);
+          showGPSError();
+          stopSpinner();
+        },
+        geoOptions
+      );
+    }
+
+    function stopSpinner() {
+      if (refreshIcon) {
+        refreshIcon.classList.remove('animate-spin');
+      }
+      if (btnRefreshGps) {
+        btnRefreshGps.disabled = false;
+      }
+    }
+
+    function showGPSError() {
+      gpsErrorPanel.classList.remove('hidden');
+      if (distanceMeters.textContent === "—" || distanceMeters.textContent.includes('Calculare')) {
+        distanceMeters.textContent = "—";
+      }
+    }
+
+
+    // 5 b. GPS Location Check for Mission 2 (Manual Refresh)
+    function calculateManualDistance2() {
+      if (!navigator.geolocation) {
+        showGPSError2();
+        return;
+      }
+
+      if (refreshIcon2) {
+        refreshIcon2.classList.add('animate-spin');
+      }
+      if (btnRefreshGps2) {
+        btnRefreshGps2.disabled = true;
+      }
+
+      const geoOptions = {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 12000
+      };
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          
+          const distance = getHaversineDistance(lat, lng, TARGET2_LAT, TARGET2_LNG);
+          const roundedDistance = Math.round(distance);
+          
+          distanceMeters2.textContent = roundedDistance;
+          gpsErrorPanel2.classList.add('hidden');
+
+          stopSpinner2();
+
+          if (roundedDistance <= 5) {
+            handleTarget2Reached();
+          }
+        },
+        (error) => {
+          console.warn("GPS lookup M2 error: ", error.message);
+          showGPSError2();
+          stopSpinner2();
+        },
+        geoOptions
+      );
+    }
+
+    function stopSpinner2() {
+      if (refreshIcon2) {
+        refreshIcon2.classList.remove('animate-spin');
+      }
+      if (btnRefreshGps2) {
+        btnRefreshGps2.disabled = false;
+      }
+    }
+
+    function showGPSError2() {
+      gpsErrorPanel2.classList.remove('hidden');
+      if (distanceMeters2.textContent === "—" || distanceMeters2.textContent.includes('Calculare')) {
+        distanceMeters2.textContent = "—";
+      }
+    }
+
+
+    // 5 c. GPS Location Check for Mission 3 (Manual Refresh)
+    function calculateManualDistance3() {
+      if (!navigator.geolocation) {
+        showGPSError3();
+        return;
+      }
+
+      if (refreshIcon3) {
+        refreshIcon3.classList.add('animate-spin');
+      }
+      if (btnRefreshGps3) {
+        btnRefreshGps3.disabled = true;
+      }
+
+      const geoOptions = {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 12000
+      };
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          
+          const distance = getHaversineDistance(lat, lng, TARGET3_LAT, TARGET3_LNG);
+          const roundedDistance = Math.round(distance);
+          
+          distanceMeters3.textContent = roundedDistance;
+          if (gpsErrorPanel3) {
+            gpsErrorPanel3.classList.add('hidden');
+          }
+
+          stopSpinner3();
+
+          if (roundedDistance <= 5) {
+            handleTarget3Reached();
+          }
+        },
+        (error) => {
+          console.warn("GPS lookup M3 error: ", error.message);
+          showGPSError3();
+          stopSpinner3();
+        },
+        geoOptions
+      );
+    }
+
+    function stopSpinner3() {
+      if (refreshIcon3) {
+        refreshIcon3.classList.remove('animate-spin');
+      }
+      if (btnRefreshGps3) {
+        btnRefreshGps3.disabled = false;
+      }
+    }
+
+    // GPS error handling fallback for Mission 3
+    function showGPSError3() {
+      if (gpsErrorPanel3) {
+        gpsErrorPanel3.classList.remove('hidden');
+      }
+      if (distanceMeters3 && (distanceMeters3.textContent === "—" || distanceMeters3.textContent.includes('Calculare'))) {
+        distanceMeters3.textContent = "—";
+      }
+    }
+
+    // 5 d. GPS Location Check for Mission 4 with Continuous watchPosition and Real-Time Compass orientation
+    function calculateManualDistance4() {
+      // 1. Solicit iOS or Android orientation sensors permission on active click
+      enableCompassSensors();
+
+      if (!navigator.geolocation) {
+        showGPSError4();
+        return;
+      }
+
+      if (refreshIcon4) {
+        refreshIcon4.classList.add('animate-spin');
+      }
+      if (btnRefreshGps4) {
+        btnRefreshGps4.disabled = true;
+      }
+
+      // If already watching, let's clear the old watch ID and start fresh
+      if (mission4WatchId !== null) {
+        navigator.geolocation.clearWatch(mission4WatchId);
+        mission4WatchId = null;
+      }
+
+      const geoOptions = {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 10000
+      };
+
+      // Watch position continuously instead of a single query to update the compass matching user footsteps!
+      mission4WatchId = navigator.geolocation.watchPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          
+          const distance = getHaversineDistance(lat, lng, TARGET4_LAT, TARGET4_LNG);
+          const roundedDistance = Math.round(distance);
+          
+          // Calculate destination target bearing and rotate live compass needle
+          currentBearing = getBearing(lat, lng, TARGET4_LAT, TARGET4_LNG);
+          updateCompassNeedle();
+          
+          if (distanceMeters4) {
+            distanceMeters4.textContent = roundedDistance;
+          }
+          
+          if (gpsErrorPanel4) {
+            gpsErrorPanel4.classList.add('hidden');
+          }
+
+          stopSpinner4();
+
+          // Under 5 meters triggers the puzzle successfully
+          if (roundedDistance <= 5) {
+            // Clean up watcher to avoid excess battery utilization
+            if (mission4WatchId !== null) {
+              navigator.geolocation.clearWatch(mission4WatchId);
+              mission4WatchId = null;
+            }
+            handleTarget4Reached();
+          }
+        },
+        (error) => {
+          console.warn("GPS lookup M4 real-time tracking error: ", error.message);
+          showGPSError4();
+          stopSpinner4();
+        },
+        geoOptions
+      );
+
+      // Simple absolute coordinate fallback check immediately to avoid delay
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const distance = getHaversineDistance(lat, lng, TARGET4_LAT, TARGET4_LNG);
+          const roundedDistance = Math.round(distance);
+          
+          currentBearing = getBearing(lat, lng, TARGET4_LAT, TARGET4_LNG);
+          updateCompassNeedle();
+          
+          if (distanceMeters4) {
+            distanceMeters4.textContent = roundedDistance;
+          }
+          if (roundedDistance <= 5) {
+            handleTarget4Reached();
+          }
+        },
+        null,
+        { enableHighAccuracy: true, timeout: 4000 }
+      );
+    }
+
+    function stopSpinner4() {
+      if (refreshIcon4) {
+        refreshIcon4.classList.remove('animate-spin');
+      }
+      if (btnRefreshGps4) {
+        btnRefreshGps4.disabled = false;
+      }
+    }
+
+    function showGPSError4() {
+      if (gpsErrorPanel4) {
+        gpsErrorPanel4.classList.remove('hidden');
+      }
+      if (distanceMeters4 && (distanceMeters4.textContent === "—" || distanceMeters4.textContent.includes('Calculare'))) {
+        distanceMeters4.textContent = "—";
+      }
+    }
+
+
+    // 6. Target Reached Handler for Mission 1
+    function handleTargetReached() {
+      // Hide standard displays
+      destinationImageContainer.classList.add('hidden');
+      distancePanel.classList.add('hidden');
+      gpsErrorPanel.classList.add('hidden');
+
+      // Vibrate if supported
+      triggerHapticVibration();
+
+      // Reveal unlock action button panel
+      clueUnlockedPanel.classList.remove('hidden');
+    }
+
+    // Target Reached Handler for Mission 2
+    function handleTarget2Reached() {
+      triggerHapticVibration();
+      
+      // We set remaining distance meters visual placeholder to 0 for pristine client feedback
+      distanceMeters2.textContent = "0";
+
+      // Reveal clue validation section smoothly when within precision range
+      const validationPanel2 = document.getElementById('validation-panel2');
+      if (validationPanel2) {
+        validationPanel2.classList.remove('hidden');
+        validationPanel2.classList.add('animate-fade-in-up');
+        // Initial setup for new elements inside the panel (in case Lucide needs render)
+        if (window.lucide) {
+          window.lucide.createIcons();
+        }
+      }
+    }
+
+    // Target Reached Handler for Mission 3
+    function handleTarget3Reached() {
+      triggerHapticVibration();
+      
+      // We set remaining distance meters visual placeholder to 0 for pristine client feedback
+      distanceMeters3.textContent = "0";
+
+      // Hide GPS displays
+      distancePanel3.classList.add('hidden');
+      if (gpsErrorPanel3) {
+        gpsErrorPanel3.classList.add('hidden');
+      }
+
+      // Reveal clue validation section smoothly when within precision range
+      validationPanel3.classList.remove('hidden');
+      validationPanel3.classList.add('animate-fade-in-up');
+      
+      // Initial setup for new elements inside the panel (in case Lucide needs render)
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
+    // Target Reached Handler for Mission 4
+    function handleTarget4Reached() {
+      triggerHapticVibration();
+      
+      // We set remaining distance meters visual placeholder to 0 for pristine client feedback
+      if (distanceMeters4) {
+        distanceMeters4.textContent = "0";
+      }
+
+      // Hide GPS displays & compass
+      if (distancePanel4) {
+        distancePanel4.classList.add('hidden');
+      }
+      if (gpsErrorPanel4) {
+        gpsErrorPanel4.classList.add('hidden');
+      }
+
+      // Reveal clue validation section smoothly when within precision range
+      if (validationPanel4) {
+        validationPanel4.classList.remove('hidden');
+        validationPanel4.classList.add('animate-fade-in-up');
+      }
+      
+      // Initial setup for new elements inside the panel (in case Lucide needs render)
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
+    function triggerHapticVibration() {
+      if (navigator.vibrate) {
+        try {
+          navigator.vibrate([200, 100, 200]);
+        } catch(e) {
+          console.log("Interactive haptic vibration locked inside browser shell environment.");
+        }
+      }
+    }
+
+    // 7. Core Event listeners Configuration
+    btnContinue.addEventListener('click', () => {
+      userNameValue = inputUsername.value.trim();
+
+      errorBanner.classList.add('hidden');
+      errorBanner.classList.remove('flex');
+      
+      if (!userNameValue) {
+        errorBanner.classList.remove('hidden');
+        errorBanner.classList.add('flex');
+        
+        inputUsername.focus();
+        inputUsername.classList.add('border-autumn-500', 'ring-1', 'ring-autumn-500');
+        setTimeout(() => {
+          inputUsername.classList.remove('border-autumn-500', 'ring-1', 'ring-autumn-500');
+        }, 1200);
+        return;
+      }
+
+      missionUserName.textContent = userNameValue;
+      switchScreens();
+    });
+
+    // Clear error feedback dynamically when user starts editing
+    inputUsername.addEventListener('input', () => {
+      if (inputUsername.value.trim().length > 0) {
+        errorBanner.classList.add('hidden');
+        errorBanner.classList.remove('flex');
+      }
+    });
+
+    // Manual Refreshers clicks listeners
+    if (btnRefreshGps) {
+      btnRefreshGps.addEventListener('click', calculateManualDistance);
+    }
+    if (btnRefreshGps2) {
+      btnRefreshGps2.addEventListener('click', calculateManualDistance2);
+    }
+    if (btnRefreshGps3) {
+      btnRefreshGps3.addEventListener('click', calculateManualDistance3);
+    }
+    if (btnRefreshGps4) {
+      btnRefreshGps4.addEventListener('click', calculateManualDistance4);
+    }
+
+    // Transitional trigger to launch Step 3 (Misiunea 2)
+    btnUnlockClue.addEventListener('click', switchScreensToMission2);
+
+    // Verify Clue Input submission validation check
+    btnVerifyClue.addEventListener('click', () => {
+      const codeValue = buildingNumberInput.value.trim();
+      clueErrorBanner.classList.add('hidden');
+
+      if (codeValue === "82") {
+        // Hide validator mechanics
+        buildingNumberInput.disabled = true;
+        buildingNumberInput.parentElement.classList.add('opacity-50', 'pointer-events-none');
+        btnVerifyClue.classList.add('hidden');
+        
+        // Show successful decodation banner
+        clueSuccessBanner.classList.remove('hidden');
+      } else {
+        // Show validation incorrect warning text
+        clueErrorBanner.classList.remove('hidden');
+        clueErrorBanner.classList.add('flex');
+      }
+    });
+
+    // Dismiss code input error dynamically on user editing
+    buildingNumberInput.addEventListener('input', () => {
+      clueErrorBanner.classList.add('hidden');
+      clueErrorBanner.classList.remove('flex');
+    });
+
+    // M3 Verify Riddle Input validation check
+    btnVerifyRiddle.addEventListener('click', () => {
+      const answerValue = riddleAnswerInput.value.toLowerCase().trim();
+      riddleErrorBanner.classList.add('hidden');
+
+      if (answerValue === "1 decembrie 1918") {
+        // Hide validator mechanics
+        riddleAnswerInput.disabled = true;
+        riddleAnswerInput.parentElement.classList.add('opacity-50', 'pointer-events-none');
+        btnVerifyRiddle.classList.add('hidden');
+        
+        // Show successful decodation banner
+        riddleSuccessBanner.classList.remove('hidden');
+      } else {
+        // Show validation incorrect warning text
+        riddleErrorBanner.classList.remove('hidden');
+        riddleErrorBanner.classList.add('flex');
+      }
+    });
+
+    // Dismiss riddle input error dynamically on user editing
+    riddleAnswerInput.addEventListener('input', () => {
+      riddleErrorBanner.classList.add('hidden');
+      riddleErrorBanner.classList.remove('flex');
+    });
+
+    // Final Next Mission Step trigger
+    btnNextMission.addEventListener('click', () => {
+      switchScreensToMission3();
+    });
+
+    // Complete Adventure trigger (transitions to Mission 4)
+    btnCompleteAdventure.addEventListener('click', () => {
+      switchScreensToMission4();
+    });
+
+    // M4 Verify Stairs Input validation check
+    btnVerifyStairs.addEventListener('click', () => {
+      const answerValue = stairsAnswerInput.value.trim();
+      stairsErrorBanner.classList.add('hidden');
+
+      // Validate correct number of stairs (20)
+      if (answerValue === "20") {
+        // Hide validator mechanics
+        stairsAnswerInput.disabled = true;
+        stairsAnswerInput.parentElement.classList.add('opacity-50', 'pointer-events-none');
+        btnVerifyStairs.classList.add('hidden');
+        
+        // Show successful decodation banner
+        stairsSuccessBanner.classList.remove('hidden');
+      } else {
+        // Show validation incorrect warning text
+        stairsErrorBanner.classList.remove('hidden');
+        stairsErrorBanner.classList.add('flex');
+      }
+    });
+
+    // Dismiss stairs input error dynamically on user editing
+    stairsAnswerInput.addEventListener('input', () => {
+      stairsErrorBanner.classList.add('hidden');
+      stairsErrorBanner.classList.remove('flex');
+    });
+
+    // Mission 4 Finish Adventure
+    btnFinishAdventure.addEventListener('click', () => {
+      // Clean up watch position tracker on finish
+      if (mission4WatchId !== null) {
+        navigator.geolocation.clearWatch(mission4WatchId);
+        mission4WatchId = null;
+      }
+      switchScreensToFinish();
+    });
+
+    // Desktop slider listener to simulate rotating holding orientation direction
+    const compassSimSlider = document.getElementById('compass-sim-slider');
+    if (compassSimSlider) {
+      compassSimSlider.addEventListener('input', (e) => {
+        currentHeading = parseInt(e.target.value, 10);
+        updateCompassNeedle();
+      });
+    }
+
+    // Restart Adventure Step
+    btnRestartAdventure.addEventListener('click', () => {
+      // Fade out finish screen
+      finishScreen.classList.add('opacity-0', 'scale-95');
+      
+      // Clean up watch position tracker if running
+      if (mission4WatchId !== null) {
+        navigator.geolocation.clearWatch(mission4WatchId);
+        mission4WatchId = null;
+      }
+
+      setTimeout(() => {
+        finishScreen.classList.add('hidden');
+        
+        // Reset Inputs & states
+        inputUsername.value = "";
+        buildingNumberInput.value = "";
+        buildingNumberInput.disabled = false;
+        buildingNumberInput.parentElement.classList.remove('opacity-50', 'pointer-events-none');
+        clueSuccessBanner.classList.add('hidden');
+        btnVerifyClue.classList.remove('hidden');
+        
+        riddleAnswerInput.value = "";
+        riddleAnswerInput.disabled = false;
+        riddleAnswerInput.parentElement.classList.remove('opacity-50', 'pointer-events-none');
+        riddleSuccessBanner.classList.add('hidden');
+        btnVerifyRiddle.classList.remove('hidden');
+
+        stairsAnswerInput.value = "";
+        stairsAnswerInput.disabled = false;
+        stairsAnswerInput.parentElement.classList.remove('opacity-50', 'pointer-events-none');
+        stairsSuccessBanner.classList.add('hidden');
+        btnVerifyStairs.classList.remove('hidden');
+
+        // Restore GPS Panels and Images
+        destinationImageContainer.classList.remove('hidden');
+        distancePanel.classList.remove('hidden');
+        clueUnlockedPanel.classList.add('hidden');
+        
+        document.getElementById('validation-panel2').classList.add('hidden');
+        distancePanel2.classList.remove('hidden');
+        
+        document.getElementById('validation-panel3').classList.add('hidden');
+        distancePanel3.classList.remove('hidden');
+
+        document.getElementById('validation-panel4').classList.add('hidden');
+        distancePanel4.classList.remove('hidden');
+
+        // Reset compass simulator elements state
+        if (compassSimSlider) {
+          compassSimSlider.value = 0;
+        }
+        currentHeading = 0;
+        currentBearing = 0;
+        if (compassNeedle) {
+          compassNeedle.style.transform = "rotate(0deg)";
+        }
+        if (compassAngleText) {
+          compassAngleText.textContent = "Direcție: —°";
+        }
+
+        // Restore distance text placeholders
+        distanceMeters.textContent = "—";
+        distanceMeters2.textContent = "—";
+        distanceMeters3.textContent = "—";
+        distanceMeters4.textContent = "—";
+        
+        missionBadge.textContent = "Bucharest • Misiunea 1";
+
+        // Show start screen
+        setupScreen.classList.remove('hidden');
+        setTimeout(() => {
+          setupScreen.classList.remove('opacity-0', 'scale-95');
+          setupScreen.classList.add('opacity-100', 'scale-100');
+        }, 30);
+      }, 450);
+    });
+
+
+  </script>
+</body>
+</html>
